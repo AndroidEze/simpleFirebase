@@ -4,9 +4,19 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.EditText;
+
+import com.firebase.client.Firebase;
+
+import butterknife.Bind;
 
 
 public class MainActivity extends ActionBarActivity {
+
+    private String FIREBASE_URL = "https://shining-inferno-7002.firebaseio.com/";
+    private String FIREBASE_CHILD = "test";
+    @Bind(R.id.editText) EditText editText;
+    Firebase firebase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
