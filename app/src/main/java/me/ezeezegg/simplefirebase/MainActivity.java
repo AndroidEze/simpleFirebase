@@ -9,6 +9,8 @@ import android.widget.EditText;
 import com.firebase.client.Firebase;
 
 import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity {
@@ -22,8 +24,19 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        Firebase.setAndroidContext(this);
+        firebase = new Firebase(FIREBASE_URL).child(FIREBASE_URL);
+
+
     }
 
+    @OnClick(R.id.button)
+    public void writeToFirebase(){
+        firebase.setValue(editText.getText().toString());
+        editText.setText("");
+    }
+    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
