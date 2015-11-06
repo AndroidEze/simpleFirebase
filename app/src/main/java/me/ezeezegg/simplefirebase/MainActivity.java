@@ -1,5 +1,6 @@
 package me.ezeezegg.simplefirebase;
 
+import android.app.Application;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,22 +19,26 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Application {
     private String FIREBASE_URL = "https://siplefirebase.firebaseio.com/";
-    private String FIREBASE_CHILD = "test";
-    @Bind(R.id.editText) EditText editText;
+    private String FIREBASE_CHILD = "items";
+    //@Bind(R.id.editText) EditText editText;
     Firebase firebase;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+    public void onCreate() {
+        //super.onCreate(savedInstanceState);
+        //setContentView(R.layout.activity_main);
+        super.onCreate();
 
-        ButterKnife.bind(this);
+        //ButterKnife.bind(this);
         Firebase.setAndroidContext(this);
+        Firebase.getDefaultConfig().setPersistenceEnabled(true);//support offline
         firebase = new Firebase(FIREBASE_URL).child(FIREBASE_CHILD);
 
-        firebase.addValueEventListener(new ValueEventListener() {
+
+
+        /*firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 Toast.makeText(MainActivity.this, snapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
@@ -43,12 +48,15 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onCancelled(FirebaseError error) {
             }
-        });
+        });*/
     }
 
-    @OnClick(R.id.button)
+    /*@OnClick(R.id.button)
     public void writeToFirebase() {
         firebase.setValue(editText.getText().toString());
         editText.setText("");
+    }*/
+    public Firebase getFirebase(){
+        return firebase;
     }
 }
