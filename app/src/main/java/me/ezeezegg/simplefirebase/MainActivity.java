@@ -2,11 +2,16 @@ package me.ezeezegg.simplefirebase;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -14,8 +19,7 @@ import butterknife.OnClick;
 
 
 public class MainActivity extends ActionBarActivity {
-
-    private String FIREBASE_URL = "https://shining-inferno-7002.firebaseio.com/";
+    private String FIREBASE_URL = "https://siplefirebase.firebaseio.com/";
     private String FIREBASE_CHILD = "test";
     @Bind(R.id.editText) EditText editText;
     Firebase firebase;
@@ -24,38 +28,27 @@ public class MainActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         ButterKnife.bind(this);
         Firebase.setAndroidContext(this);
-        firebase = new Firebase(FIREBASE_URL).child(FIREBASE_URL);
+        firebase = new Firebase(FIREBASE_URL).child(FIREBASE_CHILD);
 
+        /*firebase.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                Toast.makeText(MainActivity.this, snapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
+                Log.e(getLocalClassName(), snapshot.getValue().toString());
+            }
 
+            @Override
+            public void onCancelled(FirebaseError error) {
+            }
+        });*/
     }
 
     @OnClick(R.id.button)
-    public void writeToFirebase(){
+    public void writeToFirebase() {
         firebase.setValue(editText.getText().toString());
         editText.setText("");
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 }
