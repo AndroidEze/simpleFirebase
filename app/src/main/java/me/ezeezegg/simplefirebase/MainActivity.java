@@ -33,7 +33,7 @@ public class MainActivity extends ActionBarActivity {
         Firebase.setAndroidContext(this);
         firebase = new Firebase(FIREBASE_URL).child(FIREBASE_CHILD);
 
-        /*firebase.addValueEventListener(new ValueEventListener() {
+        firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 Toast.makeText(MainActivity.this, snapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onCancelled(FirebaseError error) {
             }
-        });*/
+        });
     }
 
     @OnClick(R.id.button)
