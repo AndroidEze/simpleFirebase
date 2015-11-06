@@ -19,7 +19,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class MainActivity extends Application {
+public class ToDoApplication extends Application {
     private String FIREBASE_URL = "https://siplefirebase.firebaseio.com/";
     private String FIREBASE_CHILD = "items";
     //@Bind(R.id.editText) EditText editText;
@@ -41,7 +41,7 @@ public class MainActivity extends Application {
         /*firebase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
-                Toast.makeText(MainActivity.this, snapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(ToDoApplication.this, snapshot.getValue().toString(), Toast.LENGTH_SHORT).show();
                 Log.e(getLocalClassName(), snapshot.getValue().toString());
             }
 
