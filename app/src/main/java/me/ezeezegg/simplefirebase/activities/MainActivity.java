@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.Firebase;
@@ -39,6 +42,16 @@ public class MainActivity extends ActionBarActivity {
         setTitle(username);
         ToDoApplication app = (ToDoApplication)getApplicationContext();
         dataReference = app.getFirebase();
+    }
+
+    public class ToDoItemViewHolder extends RecyclerView.ViewHolder{
+        @Bind(R.id.txtItem) TextView txtItem;
+        @Bind(R.id.txtUser) TextView txtUser;
+        @Bind(R.id.imgDone) ImageView imgDone;
+        public ToDoItemViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
+        }
     }
 
     private void setupUsername() {
