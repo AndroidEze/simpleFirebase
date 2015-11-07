@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            int position = getAdapterPosition();
+            int position = getAdapterPosition();//obtiene la posición
             ToDoItem currentItem = (ToDoItem)adapter.getItem(position);
             Firebase reference = adapter.getRef(position);
             boolean completed = !currentItem.isCompleted();
@@ -160,9 +160,9 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public boolean onLongClick(View view) {
-            int position = getAdapterPosition();
-            Firebase reference = adapter.getRef(position);
-            reference.removeValue();
+            int position = getAdapterPosition();//obtiene la posicion
+            Firebase reference = adapter.getRef(position);//le dice al a Firebase cual es el adapter
+            reference.removeValue();//lo elimina
             return true;
         }
     }
