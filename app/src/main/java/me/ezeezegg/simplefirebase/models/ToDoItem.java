@@ -8,6 +8,8 @@ public class ToDoItem {
     String item;
     boolean completed;
 
+    public ToDoItem(){ }
+
     public ToDoItem(String username, String item, boolean completed){
         this.username = username;
         this.item = item;

@@ -1,5 +1,6 @@
 package me.ezeezegg.simplefirebase.activities;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -11,26 +12,31 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.client.ChildEventListener;
+import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
 import com.firebase.ui.FirebaseRecyclerViewAdapter;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import me.ezeezegg.simplefirebase.R;
 import me.ezeezegg.simplefirebase.ToDoApplication;
 import me.ezeezegg.simplefirebase.models.ToDoItem;
 
 public class MainActivity extends AppCompatActivity {
-
     @Bind(R.id.recycler_view_items) RecyclerView recyclerView;
-    @Bind(R.id.editTextItem) EditText editTestItem;
+    @Bind(R.id.editTextItem) EditText editTextItem;
 
     private ChildEventListener toDoItemListener;
     private FirebaseRecyclerViewAdapter adapter;
@@ -79,18 +85,25 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-    }
+        toDoItemListener = dataReference.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                recyclerView.scrollToPosition(adapter.getItemCount() - 1);
+            }
 
-    public class ToDoItemViewHolder extends RecyclerView.ViewHolder{
-        @Bind(R.id.txtItem) TextView txtItem;
-        @Bind(R.id.txtUser) TextView txtUser;
-        @Bind(R.id.imgDone) ImageView imgDone;
-        public ToDoItemViewHolder(View itemView) {
-            super(itemView);
-            ButterKnife.bind(this, itemView);
-        }
-    }
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
 
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {}
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {}
+        });
+    }
     private void setupUsername() {
         SharedPreferences prefs = getApplication().getSharedPreferences("ToDoPrefs", 0);
         String username = prefs.getString("username", null);
@@ -98,6 +111,59 @@ public class MainActivity extends AppCompatActivity {
             Random r = new Random();
             username = "AndroidUser" + r.nextInt(100000);
             prefs.edit().putString("username", username).commit();
+        }
+    }
+
+    @OnClick(R.id.fab)
+    public void addToDoItem() {
+        SharedPreferences prefs = getApplication().getSharedPreferences("ToDoPrefs", 0);
+        String username = prefs.getString("username", null);
+
+        String itemText = editTextItem.getText().toString();
+        editTextItem.setText("");
+
+        InputMethodManager inputMethodManager = (InputMethodManager)  getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+
+        if (!itemText.isEmpty()) {
+            ToDoItem toDoItem = new ToDoItem(itemText.trim(), username, false);
+            dataReference.push().setValue(toDoItem);
+        }
+    }
+
+    public class ToDoItemViewHolder extends RecyclerView.ViewHolder
+            implements View.OnClickListener,
+            View.OnLongClickListener {
+        @Bind(R.id.txtItem) TextView txtItem;
+        @Bind(R.id.txtUser) TextView txtUser;
+        @Bind(R.id.imgDone) ImageView imgDone;
+
+        public ToDoItemViewHolder(View view) {
+            super(view);
+            view.setOnClickListener(this);
+            view.setOnLongClickListener(this);
+            ButterKnife.bind(this, view);
+        }
+
+        @Override
+        public void onClick(View view) {
+            int position = getAdapterPosition();
+            ToDoItem currentItem = (ToDoItem)adapter.getItem(position);
+            Firebase reference = adapter.getRef(position);
+            boolean completed = !currentItem.isCompleted();
+
+            currentItem.setCompleted(completed);
+            Map<String, Object> updates = new HashMap<String, Object>();
+            updates.put("completed", completed);
+            reference.updateChildren(updates);
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+            int position = getAdapterPosition();
+            Firebase reference = adapter.getRef(position);
+            reference.removeValue();
+            return true;
         }
     }
 }
